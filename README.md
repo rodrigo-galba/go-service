@@ -72,6 +72,11 @@ Environment details for: development
 2022-02-20 16:42:04    INFO    Successfully launched environment: development
 ```
 
+To terminate an environment:
+```shell
+eb terminate development # terminate environment-name
+```
+
 ## Using the Recipes API
 
 Create a new Recipe:
