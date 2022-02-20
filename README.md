@@ -72,6 +72,14 @@ Environment details for: development
 2022-02-20 16:42:04    INFO    Successfully launched environment: development
 ```
 
+To scale up the application:  
+```shell
+$ eb scale 4 development --profile guru -r us-east-1
+2022-02-20 17:06:23    INFO    Environment update is starting.
+2022-02-20 17:06:31    INFO    Updating environment development's configuration settings.
+2022-02-20 17:08:41    INFO    Successfully deployed new configuration to environment.
+```
+
 To terminate an environment:
 ```shell
 eb terminate development # terminate environment-name

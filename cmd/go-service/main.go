@@ -16,6 +16,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	handlers "github.com/rodrigo-galba/go-service/internal/go-service/handlers"
@@ -24,13 +25,16 @@ import (
 	"log"
 )
 
+var recipesHandler *handlers.RecipesHandler
+
 func init() {
 	log.Println("Initializing service")
+	ctx := context.Background()
 	file, _ := ioutil.ReadFile("./configs/recipes.json")
 	recipesList := make([]models.Recipe, 0)
 	_ = json.Unmarshal(file, &recipesList)
 
-	handlers.InitializeRecipeHandler(recipesList)
+	recipesHandler = handlers.NewRecipesHandler(ctx, recipesList)
 }
 
 func setupRouter() *gin.Engine {
@@ -49,12 +53,12 @@ func setupRouter() *gin.Engine {
 	// Health check test
 	router.GET("/", handlers.HealthcheckHandler)
 	router.GET("/health", handlers.HealthcheckHandler)
-	router.POST("/recipes", handlers.NewRecipeHandler)
-	router.GET("/recipes", handlers.ListRecipesHandler)
-	router.PUT("/recipes/:id", handlers.UpdateRecipeHandler)
-	router.DELETE("/recipes/:id", handlers.DeleteRecipeHandler)
-	router.GET("/recipes/search", handlers.SearchRecipesHandler)
-	router.GET("/recipes/:id", handlers.GetRecipeHandler)
+	router.POST("/recipes", recipesHandler.NewRecipeHandler)
+	router.GET("/recipes", recipesHandler.ListRecipesHandler)
+	router.PUT("/recipes/:id", recipesHandler.UpdateRecipeHandler)
+	router.DELETE("/recipes/:id", recipesHandler.DeleteRecipeHandler)
+	router.GET("/recipes/search", recipesHandler.SearchRecipesHandler)
+	router.GET("/recipes/:id", recipesHandler.GetRecipeHandler)
 
 	return router
 }

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	models "github.com/rodrigo-galba/go-service/internal/go-service/models"
 	"github.com/rs/xid"
@@ -10,10 +11,16 @@ import (
 	"time"
 )
 
-var recipes []models.Recipe
+type RecipesHandler struct {
+	ctx         context.Context
+	recipes[]	models.Recipe
+}
 
-func InitializeRecipeHandler(recipesList []models.Recipe) {
-	recipes = recipesList
+func NewRecipesHandler(ctx context.Context, recipesList []models.Recipe) *RecipesHandler {
+	return &RecipesHandler{
+		ctx:      ctx,
+		recipes:  recipesList,
+	}
 }
 
 // swagger:operation POST /recipes recipes newRecipe
@@ -26,10 +33,11 @@ func InitializeRecipeHandler(recipesList []models.Recipe) {
 //         description: Successful operation
 //     '400':
 //         description: Invalid input
-func NewRecipeHandler(ctx *gin.Context) {
+func (handler *RecipesHandler) NewRecipeHandler(ctx *gin.Context) {
 	log.Println("creating a recipe")
 
 	var recipe models.Recipe
+	var recipes = handler.recipes
 	if err := ctx.ShouldBindJSON(&recipe); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -53,9 +61,9 @@ func NewRecipeHandler(ctx *gin.Context) {
 // responses:
 //     '200':
 //         description: Successful operation
-func ListRecipesHandler(c *gin.Context) {
+func (handler *RecipesHandler) ListRecipesHandler(c *gin.Context) {
 	log.Println("listing recipes")
-	c.JSON(http.StatusOK, recipes)
+	c.JSON(http.StatusOK, handler.recipes)
 }
 
 // swagger:operation PUT /recipes/{id} recipes updateRecipe
@@ -76,9 +84,11 @@ func ListRecipesHandler(c *gin.Context) {
 //         description: Invalid input
 //     '404':
 //         description: Invalid recipe ID
-func UpdateRecipeHandler(c *gin.Context) {
+func (handler *RecipesHandler) UpdateRecipeHandler(c *gin.Context) {
 	id := c.Param("id")
 	var recipe models.Recipe
+	var recipes = handler.recipes
+
 	if err := c.ShouldBindJSON(&recipe); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error()})
@@ -97,7 +107,7 @@ func UpdateRecipeHandler(c *gin.Context) {
 		return
 	}
 
-	recipes[index] = recipe
+	handler.recipes[index] = recipe
 	c.JSON(http.StatusOK, recipe)
 }
 
@@ -117,14 +127,15 @@ func UpdateRecipeHandler(c *gin.Context) {
 //         description: Successful operation
 //     '404':
 //         description: Invalid recipe ID
-func DeleteRecipeHandler(c *gin.Context) {
+func (handler *RecipesHandler) DeleteRecipeHandler(c *gin.Context) {
 	id := c.Param("id")
 	log.Println("deleting recipe by id: " + id)
 	defer log.Println("Recipe by id: " + id + " deleted.")
+	var recipes = handler.recipes
 
 	index := -1
-	for i := 0; i < len(recipes); i++ {
-		if recipes[i].ID == id {
+	for i := 0; i < len(handler.recipes); i++ {
+		if handler.recipes[i].ID == id {
 			index = i
 		}
 	}
@@ -152,9 +163,10 @@ func DeleteRecipeHandler(c *gin.Context) {
 // responses:
 //     '200':
 //         description: Successful operation
-func SearchRecipesHandler(c *gin.Context) {
+func (handler *RecipesHandler) SearchRecipesHandler(c *gin.Context) {
 	tag := c.Query("tag")
 	log.Println("Searching recipes by tag: " + tag)
+	var recipes = handler.recipes
 
 	listOfRecipes := make([]models.Recipe, 0)
 	for i := 0; i < len(recipes); i++ {
@@ -187,7 +199,9 @@ func SearchRecipesHandler(c *gin.Context) {
 //         description: Successful operation
 //     '404':
 //         description: Invalid recipe ID
-func GetRecipeHandler(c *gin.Context) {
+func (handler *RecipesHandler) GetRecipeHandler(c *gin.Context) {
+	var recipes = handler.recipes
+
 	id := c.Param("id")
 	for i := 0; i < len(recipes); i++ {
 		if recipes[i].ID == id {
