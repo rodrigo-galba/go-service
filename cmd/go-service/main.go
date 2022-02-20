@@ -47,6 +47,7 @@ func setupRouter() *gin.Engine {
 	router.Use(gin.Recovery())
 
 	// Health check test
+	router.GET("/", handlers.HealthcheckHandler)
 	router.GET("/health", handlers.HealthcheckHandler)
 	router.POST("/recipes", handlers.NewRecipeHandler)
 	router.GET("/recipes", handlers.ListRecipesHandler)
