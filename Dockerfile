@@ -15,5 +15,5 @@ RUN apk --no-cache add ca-certificates
 COPY --from=0 /app/go-service /go-service
 COPY configs ./configs
 
-EXPOSE 8080
+EXPOSE 5000
 CMD ["/go-service"]

@@ -46,6 +46,32 @@ curl --request GET \
   --url http://localhost:8080/recipes
 ```
 
+## AWS Elastic beanstalk
+
+To deploy project as a Docker application on Elastic Beanstalk service, use its `eb` CLI.  
+Initialize as a Docker project:
+```shell
+eb init -p docker go-service
+```
+
+Create and deploy an environment:
+```shell
+$ eb create development --profile guru -r us-east-1 # set aws profile (guru) and region
+Environment details for: development
+  Application name: go-service
+  Region: us-east-1
+  Deployed Version: app-aea4-220220_133835
+  Environment ID: e-g4dfgzqi3m
+  Platform: arn:aws:elasticbeanstalk:us-east-1::platform/Docker running on 64bit Amazon Linux 2/3.4.11
+  Tier: WebServer-Standard-1.0
+  CNAME: UNKNOWN
+  Updated: 2022-02-20 16:38:40.710000+00:00
+...
+2022-02-20 16:41:55    INFO    Instance deployment completed successfully.
+2022-02-20 16:42:03    INFO    Application available at development.eba-quq3pqcy.us-east-1.elasticbeanstalk.com.
+2022-02-20 16:42:04    INFO    Successfully launched environment: development
+```
+
 ## Using the Recipes API
 
 Create a new Recipe:

@@ -62,5 +62,5 @@ func main() {
 	r := setupRouter()
 	// By default it serves on :8080 unless a
 	// PORT environment variable was defined.
-	r.Run(":8080")
+	r.Run(":5000")
 }
