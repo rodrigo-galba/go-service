@@ -165,3 +165,11 @@ To add more fields into API's metadata, go to [Swagger metadata list](https://go
 References
 - [GO project layout] (https://github.com/golang-standards/project-layout)
 - [Go Swagger] (https://goswagger.io/generate/spec.html)
+
+
+## Performance benchmark
+
+```shell
+ab -n 2000 -c 100 -g without-cache.data http://localhost:8080/recipes
+# ab -n 2000 -c 100 -g with-cache.data http://localhost:8080/recipes
+``` 

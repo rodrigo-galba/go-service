@@ -19,18 +19,21 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	handlers "github.com/rodrigo-galba/go-service/internal/go-service/handlers"
 	"github.com/rodrigo-galba/go-service/internal/go-service/models"
 	"io/ioutil"
 	"log"
+	"os"
 )
 
 var recipesHandler *handlers.RecipesHandler
 
 func init() {
 	log.Println("Initializing service")
+	godotenv.Load()
 	ctx := context.Background()
-	file, _ := ioutil.ReadFile("./configs/recipes.json")
+	file, _ := ioutil.ReadFile(os.Getenv("RECIPES_DATASET"))
 	recipesList := make([]models.Recipe, 0)
 	_ = json.Unmarshal(file, &recipesList)
 
